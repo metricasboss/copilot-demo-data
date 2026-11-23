@@ -35,6 +35,7 @@ npm run typecheck
 
 - `docs/ARQUITETURA.md`: modelo causal, mapeamento por fonte, custo no GCP.
 - `docs/CENARIOS.md`: armadilhas plantadas e verdade do MMM.
+- `docs/OPERACAO.md`: como configurar e operar a pipeline diária (GitHub Actions + BigQuery).
 - `docs/ROTEIRO.md`: perguntas da demo (rascunho).
 
 ## Segurança

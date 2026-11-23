@@ -1,0 +1,80 @@
+name: daily-load
+
+# Gera o dia anterior e carrega no BigQuery. Só roda com a variável de repositório
+# DEMO_PIPELINE_ENABLED=true (Settings > Secrets and variables > Actions > Variables).
+on:
+  schedule:
+    - cron: "17 5 * * *" # 05:17 UTC, ~02:17 em Brasília
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "Início (YYYY-MM-DD). Vazio = ontem."
+        required: false
+      to:
+        description: "Fim (YYYY-MM-DD). Vazio = ontem."
+        required: false
+      dry_run:
+        description: "Só imprime os comandos bq, sem carregar"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write # necessário para o Workload Identity Federation
+
+concurrency:
+  group: daily-load
+  cancel-in-progress: false
+
+jobs:
+  load:
+    if: vars.DEMO_PIPELINE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Gerar dados
+        env:
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+        run: |
+          args=()
+          [ -n "$FROM" ] && args+=(--from "$FROM")
+          [ -n "$TO" ] && args+=(--to "$TO")
+          node src/cli.ts "${args[@]}" --out out
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Carregar no BigQuery
+        env:
+          BQ_PROJECT: ${{ vars.GCP_PROJECT }}
+          BQ_DATASET: ${{ vars.BQ_DATASET }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+        run: node scripts/load-bq.ts
+
+  # Workflows agendados em repositório sem atividade são desativados após ~60 dias.
+  keepalive:
+    if: github.event_name == 'schedule' && vars.DEMO_PIPELINE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Reativar o agendamento
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/daily-load.yml/enable"
