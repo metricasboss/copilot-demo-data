@@ -1,0 +1,16 @@
+{
+  "name": "copilot-demo-data",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Gerador determinístico de uma loja simulada (Magento, GA4, Google Ads, Search Console, TikTok, MMM) para a Conta demo do Analytics Copilot.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
