@@ -1,0 +1,107 @@
+[
+  {
+    "name": "entity_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "increment_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "created_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "store_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "customer_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "customer_email",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "customer_firstname",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "customer_lastname",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "customer_taxvat",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "shipping_telephone",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "shipping_postcode",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "shipping_city",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "shipping_region",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "total_item_count",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "subtotal",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "discount_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "shipping_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "grand_total",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "coupon_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "payment_method",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]
