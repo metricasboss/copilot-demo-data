@@ -51,3 +51,10 @@ um PR no `gmp-cli` (flags `--dry-run` e `--max-bytes`, e `bytesProcessed` na sa�
 2. Search Console, TikTok, orgânico/marca e MMM com verdade conhecida.
 3. Mock HTTP do Magento/TikTok e conector, se a demo pedir.
 4. Mesmo gerador em DuckDB no sidecar, para o onboarding.
+
+## Limitação: GA4 simplificado, não o export nativo
+
+`ga4_events` é **plano** (colunas `traffic_source_*`, `item_id`, `value`...). O export real do GA4 tem
+`event_params`, `user_properties` e `items` aninhados (RECORD repetido). Por isso os templates do
+`gmp bq query -t ga4-*` (que achatam `event_params`) **não rodam** nesta tabela; o agente usa `gmp bq custom`
+com SQL. Para a demo aceitar os templates nativos, o exporter precisa gerar o schema aninhado (fase 2).

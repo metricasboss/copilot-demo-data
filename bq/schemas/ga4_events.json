@@ -1,0 +1,72 @@
+[
+  {
+    "name": "event_date",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_timestamp",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "user_pseudo_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "ga_session_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "traffic_source_source",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "traffic_source_medium",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "traffic_source_campaign",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "device_category",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "item_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "item_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "value",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "currency",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "transaction_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

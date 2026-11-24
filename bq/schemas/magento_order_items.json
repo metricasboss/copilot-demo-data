@@ -1,0 +1,42 @@
+[
+  {
+    "name": "item_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "order_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sku",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "qty_ordered",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "price",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "row_total",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "base_cost",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }
+]
