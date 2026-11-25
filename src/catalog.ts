@@ -77,7 +77,11 @@ const CITIES = [
 const CITY_WEIGHTS = [30, 14, 8, 7, 6, 6, 5, 4, 5, 3];
 const DOMAINS = ["example.com", "example.org", "example.net"];
 
-export const CUSTOMER_POOL = 40_000;
+/** Clientes novos e ocasionais (ids acima de LOYAL_POOL): quase todos compram uma vez só. */
+export const CUSTOMER_POOL = 60_000;
+/** Clientes fiéis (ids 1..LOYAL_POOL): ~10% dos pedidos, espalhados, então poucos pedidos cada um (sem "baleias"). */
+export const LOYAL_POOL = 400;
+export const LOYAL_SHARE = 0.1;
 
 export interface Customer {
   id: number;

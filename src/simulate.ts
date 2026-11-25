@@ -1,6 +1,6 @@
 import { hash32, rngFor, poisson } from "./prng.ts";
 import { demandFactor } from "./calendar.ts";
-import { buildCatalog, customerFor, CUSTOMER_POOL, type Product } from "./catalog.ts";
+import { buildCatalog, customerFor, CUSTOMER_POOL, LOYAL_POOL, LOYAL_SHARE, type Product } from "./catalog.ts";
 import { clamp, logn, pick, pickWeighted, round1, round2, sampleIndices } from "./util.ts";
 
 export type Row = Record<string, string | number | null>;
@@ -90,11 +90,11 @@ export const ORDER_COLUMNS = [
   "total_item_count", "subtotal", "discount_amount", "shipping_amount", "grand_total",
   "coupon_code", "payment_method",
 ] as const;
-export const ITEM_COLUMNS = ["item_id", "order_id", "sku", "name", "qty_ordered", "price", "row_total", "base_cost"] as const;
+export const ITEM_COLUMNS = ["item_id", "order_id", "sku", "product_name", "qty_ordered", "price", "row_total", "base_cost"] as const;
 export const CREDITMEMO_COLUMNS = ["entity_id", "order_id", "order_increment_id", "created_at", "grand_total"] as const;
 export const ADS_COLUMNS = ["date", "campaign_id", "campaign_name", "campaign_type", "impressions", "clicks", "cost", "conversions", "conversions_value"] as const;
 export const TRUTH_COLUMNS = ["date", "channel", "sessions", "orders", "revenue"] as const;
-export const PRODUCT_COLUMNS = ["sku", "name", "category", "price", "cost"] as const;
+export const PRODUCT_COLUMNS = ["sku", "product_name", "category", "price", "cost"] as const;
 
 // ---- Simulação -----------------------------------------------------------------------------
 
@@ -123,6 +123,16 @@ interface BuiltOrder {
   grandTotal: number;
   coupon: string | null;
   payment: string;
+}
+
+/**
+ * Cliente de um pedido: ~10% vêm de um grupo fiel pequeno (ids 1..LOYAL_POOL, uniforme, então ~3 pedidos
+ * cada em 90 dias) e o resto de um grupo grande (uniforme, quase todos compram uma vez). A versão antiga
+ * usava `u^2.2` sobre um grupo único, o que criava um cliente com ~90 pedidos em 90 dias.
+ */
+function pickCustomerId(rng: () => number): number {
+  if (rng() < LOYAL_SHARE) return 1 + Math.floor(rng() * LOYAL_POOL);
+  return LOYAL_POOL + 1 + Math.floor(rng() * CUSTOMER_POOL);
 }
 
 function daysBetween(from: string, to: string): number {
@@ -197,7 +207,7 @@ export function simulateDay(seed: number, date: string, opts: SimOptions = {}): 
       let customerId: number | undefined;
       if (buyer) {
         // Clientes recorrentes: quanto menor o id, mais compra (distribuição enviesada).
-        customerId = 1 + Math.floor(CUSTOMER_POOL * Math.pow(srng(), 2.2));
+        customerId = pickCustomerId(srng);
         userId = `${seedHash(seed, "c", customerId)}.${1_600_000_000 + (seedHash(seed, "cc", customerId) % 90_000_000)}`;
       } else {
         userId = `${seedHash(seed, `${date}|${ch.id}`, i)}.${1_600_000_000 + (seedHash(seed, `${date}|t|${ch.id}`, i) % 90_000_000)}`;
@@ -302,7 +312,7 @@ export function simulateDay(seed: number, date: string, opts: SimOptions = {}): 
         item_id: o.entityId * 10 + k + 1,
         order_id: o.entityId,
         sku: it.product.sku,
-        name: it.product.name,
+        product_name: it.product.name,
         qty_ordered: it.qty,
         price: it.product.price,
         row_total: round2(it.product.price * it.qty),
@@ -416,7 +426,7 @@ export function catalogTable(seed: number): DayTable {
     destination: "magento_products",
     schema: "magento_products.json",
     columns: PRODUCT_COLUMNS,
-    rows: buildCatalog(seed).map((p) => ({ sku: p.sku, name: p.name, category: p.category, price: p.price, cost: p.cost })),
+    rows: buildCatalog(seed).map((p) => ({ sku: p.sku, product_name: p.name, category: p.category, price: p.price, cost: p.cost })),
   };
 }
 

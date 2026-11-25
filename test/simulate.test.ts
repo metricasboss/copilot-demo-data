@@ -154,3 +154,39 @@ function cpfValid(d: string): boolean {
   };
   return dv(9) === Number(d[9]) && dv(10) === Number(d[10]);
 }
+
+test("recompra realista: sem 'baleias' (a maioria compra uma vez, ninguém compra quase todo dia)", () => {
+  const porCliente = new Map<number, number>();
+  const hoje = "2027-01-01";
+  for (let i = 0; i < 60; i++) {
+    const d = new Date(Date.UTC(2026, 9, 1 + i)).toISOString().slice(0, 10);
+    for (const o of get(simulateDay(SEED, d, { today: hoje }), "magento_orders")) {
+      porCliente.set(Number(o.customer_id), (porCliente.get(Number(o.customer_id)) ?? 0) + 1);
+    }
+  }
+  const contagens = [...porCliente.values()];
+  const clientes = contagens.length;
+  const unico = contagens.filter((n) => n === 1).length / clientes;
+  const cinco = contagens.filter((n) => n >= 5).length;
+  const maximo = Math.max(...contagens);
+  assert.ok(clientes > 3000, `poucos clientes distintos: ${clientes}`);
+  assert.ok(unico >= 0.75, `só ${(unico * 100).toFixed(0)}% compraram uma vez`);
+  assert.ok(maximo <= 12, `um cliente com ${maximo} pedidos em 60 dias é irreal`);
+  assert.ok(cinco / clientes <= 0.03, `${cinco} clientes com 5+ pedidos (${((cinco / clientes) * 100).toFixed(1)}%)`);
+  assert.ok(contagens.some((n) => n > 1), "mas ainda existem clientes recorrentes");
+});
+
+test("nenhuma tabela tem coluna chamada exatamente 'name' (a fronteira de PII do app a trata como nome de pessoa)", () => {
+  const colunas = simulateDay(SEED, D, { today: TODAY }).flatMap((t) => t.columns.map((c) => `${t.table}.${c}`));
+  const e = colunas.filter((c) => c.endsWith(".name"));
+  assert.deepEqual(e, [], `renomeie para <entidade>_name: ${e.join(", ")}`);
+});
+
+test("magento_products e magento_order_items expõem product_name, legível", () => {
+  const t = simulateDay(SEED, D, { today: TODAY });
+  const itens = get(t, "magento_order_items");
+  assert.ok(itens.length > 0);
+  assert.equal(typeof itens[0]!.product_name, "string");
+  assert.ok(String(itens[0]!.product_name).length > 3);
+  assert.ok(!("name" in itens[0]!));
+});
