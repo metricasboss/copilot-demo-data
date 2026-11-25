@@ -15,7 +15,7 @@
     "mode": "NULLABLE"
   },
   {
-    "name": "name",
+    "name": "product_name",
     "type": "STRING",
     "mode": "NULLABLE"
   },

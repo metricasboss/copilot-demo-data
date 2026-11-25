@@ -18,7 +18,7 @@ const TYPES: Record<string, Record<string, BqType>> = {
     shipping_amount: "FLOAT", grand_total: "FLOAT", coupon_code: "STRING", payment_method: "STRING",
   },
   magento_order_items: {
-    item_id: "INTEGER", order_id: "INTEGER", sku: "STRING", name: "STRING", qty_ordered: "INTEGER",
+    item_id: "INTEGER", order_id: "INTEGER", sku: "STRING", product_name: "STRING", qty_ordered: "INTEGER",
     price: "FLOAT", row_total: "FLOAT", base_cost: "FLOAT",
   },
   magento_creditmemos: {
@@ -31,7 +31,7 @@ const TYPES: Record<string, Record<string, BqType>> = {
   truth_daily_channel: {
     date: "DATE", channel: "STRING", sessions: "INTEGER", orders: "INTEGER", revenue: "FLOAT",
   },
-  magento_products: { sku: "STRING", name: "STRING", category: "STRING", price: "FLOAT", cost: "FLOAT" },
+  magento_products: { sku: "STRING", product_name: "STRING", category: "STRING", price: "FLOAT", cost: "FLOAT" },
 };
 
 export interface BqField { name: string; type: BqType; mode: "NULLABLE" }
